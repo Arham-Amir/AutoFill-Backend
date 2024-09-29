@@ -3,10 +3,7 @@ import fitz  # PyMuPDF
 import re
 import pdfrw
 import io
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from fastapi.responses import FileResponse
-from fastapi.background import BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
+
 
 def extract_info(text):
     info = {}
