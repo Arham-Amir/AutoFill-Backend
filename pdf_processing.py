@@ -93,7 +93,6 @@ def create_values_to_fill(processed_info):
         'Holder of Vehicle Portion of the Permit, Driver\'s Licence Number or Registrant Identification Number': '',
         'Holder of Vehicle Portion of the Permit, Box Number': processed_info['owner_address'],
         ' Box Number': processed_info['owner_address'],
-        'Holder of Vehicle Portion of the Permit, Street, P.O. Box Number': processed_info['owner_address'],
         'Holder of Vehicle Portion of the Permit, City, Town or Village': processed_info['city'],
         'Holer of Vehicle Portion of the Permit, Postal Code': processed_info['post_code'],
         'Holder of Vehicle Portion of the Permit, Telephone Number': processed_info['phone_number'],
