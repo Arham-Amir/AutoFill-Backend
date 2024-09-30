@@ -15,7 +15,7 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from config import AUTH_USERNAME, AUTH_PASSWORD, ACCESS_TOKEN_EXPIRE_MINUTES
+from config import AUTH_USERNAME, AUTH_PASSWORD, ACCESS_TOKEN_EXPIRE_MINUTES, OUTPUT_FILENAME
 from pdf_processing import extract_info, process_extracted_info, create_values_to_fill, fill_pdf_form
 from auth import create_access_token, get_current_user
 from models import Token, User
@@ -65,7 +65,7 @@ async def process_vehicle_form(
         doc.close()
 
         # Generate output filename
-        output_filename = f"{filename.rsplit('.', 1)[0]}-output.pdf"
+        output_filename = OUTPUT_FILENAME + ".pdf"
 
         # Create a temporary file to store the filled PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
