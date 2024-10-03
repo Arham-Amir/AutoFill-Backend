@@ -15,8 +15,11 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from config import AUTH_USERNAME, AUTH_PASSWORD, ACCESS_TOKEN_EXPIRE_MINUTES, OUTPUT_FILENAME
-from pdf_processing import extract_info, process_extracted_info, create_values_to_fill, fill_pdf_form
+from config import AUTH_USERNAME, AUTH_PASSWORD, ACCESS_TOKEN_EXPIRE_MINUTES
+from utils import extract_info, process_extracted_info, fill_pdf_form
+from avivaontario_processing import create_values_to_fill_avivaontario
+from avivaatlantic_processing import create_values_to_fill_avivaatlantic
+from avivaalberta_processing import create_values_to_fill_avivaalberta
 from auth import create_access_token, get_current_user
 from models import Token, User
 from datetime import timedelta
@@ -36,14 +39,21 @@ app.add_middleware(
 async def process_vehicle_form(
     file: UploadFile = File(...),
     filename: str = Form(...),
+    file_type: str = Form(...),
     background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(get_current_user)
 ):
     logger.info(f"Processing vehicle form for user: {current_user.username}")
 
     if not filename.lower().endswith(".pdf"):
-        logger.warning(f"Invalid file type uploaded by user: {current_user.username}")
+        # logger.warning(f"Invalid file type uploaded by user: {current_user.username}")
         raise HTTPException(status_code=400, detail="Invalid file type. Only PDF files are allowed.")
+
+    # Add file type validation
+    valid_file_types = ["avivaontario", "avivaatlantic", "avivaalberta"]
+    if file_type not in valid_file_types:
+        logger.warning(f"Invalid file type specified by user: {current_user.username}")
+        raise HTTPException(status_code=400, detail=f"Invalid file type. Allowed types are: {', '.join(valid_file_types)}")
 
     try:
         pdf_content = await file.read()
@@ -53,19 +63,30 @@ async def process_vehicle_form(
         raise HTTPException(status_code=400, detail=f"Failed to read PDF file: {str(e)}")
 
     try:
-        page = doc.load_page(0)
-        text = page.get_text()
+        page1 = doc.load_page(0)
+        page2 = doc.load_page(1)
+        text = page1.get_text() + "\n" + page2.get_text()
+        
         extracted_info = extract_info(text)
         processed_info = process_extracted_info(extracted_info)
-        values_to_fill = create_values_to_fill(processed_info)
+        filled_pdf = None
 
-        template_path = "Input_vehicle_ontario_pdf/to_be_filled.pdf"
+        if file_type == "avivaontario":
+            values_to_fill = create_values_to_fill_avivaontario(processed_info)
+            template_path = "available-pdfs/avivaontario.pdf"
+        elif file_type == "avivaatlantic":
+            values_to_fill = create_values_to_fill_avivaatlantic(processed_info)
+            template_path = "available-pdfs/avivaatlantic.pdf"
+        elif file_type == "avivaalberta":
+            values_to_fill = create_values_to_fill_avivaalberta(processed_info)
+            template_path = "available-pdfs/avivaalberta.pdf"
+
         filled_pdf = fill_pdf_form(template_path, values_to_fill)
 
         doc.close()
 
         # Generate output filename
-        output_filename = OUTPUT_FILENAME + ".pdf"
+        output_filename = file_type + ".pdf"
 
         # Create a temporary file to store the filled PDF
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:

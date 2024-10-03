@@ -1,0 +1,22 @@
+def create_values_to_fill_avivaalberta(processed_info):
+    return {
+        'Text6': processed_info['owner_name'].split()[1],
+        'Text7': processed_info['owner_name'].split()[0],
+        'Text10': processed_info['owner_address'],
+        'Text11': processed_info['city'],
+        'Text13': processed_info['post_code'],
+        'Text9': processed_info['phone_number'],
+        'Text4': processed_info['policy_number'],
+        'Text5': processed_info['claim_number'],
+        'Text1': processed_info['company_name'].split(" ")[1],
+        'Text2': processed_info['company_name'].split(" ")[0],
+        'Text3': processed_info['adjuster_email'],
+        'Text24': processed_info['vin'],
+        'Text14': processed_info['make'].split()[0],
+        'Text15': processed_info['make'].split()[1],
+        'Text16': processed_info['model_year'],
+        "Text17": 'Auto',
+        'Text18': processed_info['mileage'],
+        'Text21': processed_info['license_plate'].split('COLOR')[0],
+        'Text22': processed_info['state_prefix'],
+    }

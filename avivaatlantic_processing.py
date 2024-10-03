@@ -1,0 +1,20 @@
+def create_values_to_fill_avivaatlantic(processed_info):
+    return {
+        'Text78': processed_info['owner_name'],
+        'Text79': processed_info['owner_address']+ " "+ processed_info['city'] +" "+ processed_info['post_code'],
+        'Text80': processed_info['phone_number'],
+        'Text81': processed_info['policy_number'],
+        'Text82': processed_info['claim_number'],
+        'Text83': processed_info['company_name'],
+        'Text93': processed_info['date_of_loss'],
+        'Text84': processed_info['vin'],
+        'Text85': processed_info['make'].split()[0],
+        'Text86': processed_info['make'].split()[1],
+        'Text87': processed_info['model_year'],
+        'Text88': processed_info['color'],
+        "Text89": 'Auto',
+        'Text92': processed_info['mileage'],
+        'Text90': processed_info['license_plate'].split('COLOR')[0],
+        'Text91': processed_info['state_prefix'],
+        'Name': 'Jason Shufford Jr',
+    }
