@@ -122,9 +122,20 @@ def fill_pdf_form(template_path, values_to_fill):
                     field_name = annotation['/T'][1:-1]
                     if field_name in values_to_fill:
                         value = values_to_fill[field_name]
-                        annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
-                        if field_name == 'Vehicle Identification Number' or field_name == 'Name' or field_name == 'Text79' or field_name == 'Text24': 
-                            annotation.update(pdfrw.PdfDict(AP='{}'.format(value)))
+                        if field_name == 'Text24':
+                            # Remove spaces and set the value
+                            value = value.replace(" ", "")
+                            annotation.update(
+                                pdfrw.PdfDict(V='{}'.format(value), AS='{}'.format(value))
+                            )
+                            # Remove the existing appearance stream
+                            if '/AP' in annotation:
+                                del annotation['/AP']
+                        else:
+                            # For other fields, keep the existing behavior
+                            annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
+                            if field_name in ['Vehicle Identification Number', 'Name', 'Text79']:
+                                annotation.update(pdfrw.PdfDict(AP='{}'.format(value)))
 
     output_buffer = io.BytesIO()
     pdfrw.PdfWriter().write(output_buffer, template_pdf)
