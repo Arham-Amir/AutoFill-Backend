@@ -41,7 +41,7 @@ def print_pdf_input_fields(file_path):
             print("This PDF does not contain any fillable forms.")
 
 if __name__ == "__main__":
-    pdf_path = "available-pdfs/avivaalberta.pdf"
+    pdf_path = "available-pdfs/avivaontario.pdf"
     
     # Read and print PDF content
     pdf_content = read_pdf(pdf_path)

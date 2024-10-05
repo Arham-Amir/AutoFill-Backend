@@ -30,7 +30,6 @@ def extract_info(text):
         if key == "adjuster_email":
             # For adjuster email, search the entire text
             match = re.search(pattern, text, re.IGNORECASE)
-            print("adjuster_email: ", match)
         else:
             # For other patterns, keep the existing behavior
             match = re.search(pattern, text)
@@ -114,6 +113,8 @@ def process_extracted_info(extracted_info):
 def fill_pdf_form(template_path, values_to_fill):
     template_pdf = pdfrw.PdfReader(template_path)
     
+    box_number_filled = False  # Flag to track if 'Box Number' has been filled
+
     for page in template_pdf.pages:
         annotations = page.get('/Annots')
         if annotations:
@@ -122,6 +123,14 @@ def fill_pdf_form(template_path, values_to_fill):
                     field_name = annotation['/T'][1:-1]
                     if field_name in values_to_fill:
                         value = values_to_fill[field_name]
+                        
+                        # Special handling for 'Box Number'
+                        if field_name == ' Box Number':
+                            if not box_number_filled:
+                                annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
+                                box_number_filled = True
+                            continue  # Skip to next iteration after handling 'Box Number'
+                        
                         if field_name == 'Text24':
                             # Remove spaces and set the value
                             value = value.replace(" ", "")
