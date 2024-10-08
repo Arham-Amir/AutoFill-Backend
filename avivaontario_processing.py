@@ -23,8 +23,8 @@ def create_values_to_fill_avivaontario(processed_info):
         'Vehicle Information, Licence Plate': processed_info['license_plate'].split('COLOR')[0],
         'Vehicle Information, Province or State': processed_info['state_prefix'],
         'Appraisal or Inspection Contact Person, Name of Appraiser or Person Who Carried Out Inspection': 'Jason Shufford Jr',
-        'Brand Determination, Appraiser\'s Name': 'Jason Shufford Jr',
-        'Declaration, Print Name of Person Notifying Registrar': 'Jason Shufford Jr',
+        # 'Brand Determination, Appraiser\'s Name': 'Jason Shufford Jr',
+        # 'Declaration, Print Name of Person Notifying Registrar': 'Jason Shufford Jr',
         'Declaration, Date': processed_info['formatted_date'],
-        'Text22': "Jason Shufford Jr ",
+        # 'Text22': "Jason Shufford Jr ",
     }

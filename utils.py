@@ -124,27 +124,36 @@ def fill_pdf_form(template_path, values_to_fill):
                     if field_name in values_to_fill:
                         value = values_to_fill[field_name]
                         
-                        # Special handling for 'Box Number'
-                        if field_name == ' Box Number':
-                            if not box_number_filled:
-                                annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
-                                box_number_filled = True
-                            continue  # Skip to next iteration after handling 'Box Number'
-                        
+
                         if field_name == 'Text24':
-                            # Remove spaces and set the value
+                            # Remove spaces for this specific field
                             value = value.replace(" ", "")
                             annotation.update(
                                 pdfrw.PdfDict(V='{}'.format(value), AS='{}'.format(value))
                             )
-                            # Remove the existing appearance stream
-                            if '/AP' in annotation:
-                                del annotation['/AP']
+                        # Special handling for 'Box Number'
+                        elif field_name == ' Box Number':
+                            if not box_number_filled:
+                                annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
+                                box_number_filled = True
                         else:
-                            # For other fields, keep the existing behavior
                             annotation.update(pdfrw.PdfDict(V='{}'.format(value)))
-                            if field_name in ['Vehicle Identification Number', 'Name', 'Text79']:
-                                annotation.update(pdfrw.PdfDict(AP='{}'.format(value)))
+                        
+                        # Remove the background color and border
+                        annotation.update(pdfrw.PdfDict(
+                            BS=pdfrw.PdfDict(W=0),  # Set border width to 0
+                            BG=[1, 1, 1],  # Set background to white
+                        ))
+                        
+                        
+                        if field_name == 'Text24':
+                            # Remove spaces for this specific field
+                            value = value.replace(" ", "")
+                            annotation.update(pdfrw.PdfDict(AS='{}'.format(value)))
+                        
+                        # Remove the existing appearance stream to force regeneration
+                        if '/AP' in annotation:
+                            del annotation['/AP']
 
     output_buffer = io.BytesIO()
     pdfrw.PdfWriter().write(output_buffer, template_pdf)

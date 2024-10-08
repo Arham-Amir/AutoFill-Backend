@@ -73,7 +73,7 @@ async def process_vehicle_form(
 
         if file_type == "avivaontario":
             values_to_fill = create_values_to_fill_avivaontario(processed_info)
-            template_path = "available-pdfs/avivaontario.pdf"
+            template_path = "available-pdfs/avivaontario.r.pdf"
         elif file_type == "avivaatlantic":
             values_to_fill = create_values_to_fill_avivaatlantic(processed_info)
             template_path = "available-pdfs/avivaatlantic.pdf"
